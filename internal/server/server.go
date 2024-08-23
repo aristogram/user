@@ -5,22 +5,33 @@ import (
 	"net/http"
 )
 
+var Endpoints = map[string]http.Handler{
+	"/ping": http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "ты лох", 200)
+	}),
+}
+
 type Server struct {
-	mux *http.ServeMux
+	mux     *http.ServeMux
+	address string
 }
 
 func NewServer() *Server {
-	return &Server{
+	s := &Server{
 		mux: http.NewServeMux(),
 	}
+
+	for address, handler := range Endpoints {
+		s.mux.Handle(address, handler)
+	}
+
+	return s
 }
 
-func (s *Server) Start() {
-	s.mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, "ты лох", 200)
-	})
+func (s *Server) Start(address string) {
+	s.address = address
 
-	err := http.ListenAndServe("localhost:14888", s.mux)
+	err := http.ListenAndServe(s.address, s.mux)
 	if err != nil {
 		log.Fatalln("server error:", err)
 	}

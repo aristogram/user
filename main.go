@@ -4,5 +4,5 @@ import "github.com/aristogram/user/internal/server"
 
 func main() {
 	s := server.NewServer()
-	s.Start()
+	s.Start(":14888")
 }
