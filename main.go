@@ -1,8 +1,14 @@
 package main
 
-import "github.com/aristogram/user/internal/server"
+import (
+	"log"
+
+	"github.com/aristogram/user/internal/server"
+)
 
 func main() {
-	s := server.NewServer()
-	s.Start(":14888")
+	s := server.NewServer(":14888")
+	if err := s.Start(); err != nil {
+		log.Fatal(err)
+	}
 }

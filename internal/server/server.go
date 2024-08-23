@@ -1,7 +1,6 @@
 package server
 
 import (
-	"log"
 	"net/http"
 )
 
@@ -16,9 +15,10 @@ type Server struct {
 	address string
 }
 
-func NewServer() *Server {
+func NewServer(address string) *Server {
 	s := &Server{
-		mux: http.NewServeMux(),
+		mux:     http.NewServeMux(),
+		address: address,
 	}
 
 	for address, handler := range Endpoints {
@@ -28,11 +28,6 @@ func NewServer() *Server {
 	return s
 }
 
-func (s *Server) Start(address string) {
-	s.address = address
-
-	err := http.ListenAndServe(s.address, s.mux)
-	if err != nil {
-		log.Fatalln("server error:", err)
-	}
+func (s *Server) Start() error {
+	return http.ListenAndServe(s.address, s.mux)
 }
